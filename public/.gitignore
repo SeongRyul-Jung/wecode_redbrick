@@ -1,0 +1,13 @@
+node_modules
+
+.env
+
+.vscode
+
+db/schema.sql
+
+.DS_Store
+
+db/.DS_Store
+
+db/migrations/.DS_Store
