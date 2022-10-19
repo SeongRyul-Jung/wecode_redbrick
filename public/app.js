@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const { globalErrorHandler } = require('./src/utils/error');    
+const { globalErrorHandler } = require('./src/utils/error');
+const { swaggerUi, specs } = require('./src/swagger/swagger');   
+
 const routes = require("./src/routers");
+
 
 const createApp = () => {
   const app = express();
@@ -10,6 +13,7 @@ const createApp = () => {
   app.use(express.json());
   app.use(cors());
   app.use(morgan("dev"));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
   app.get('/ping', function (req, res, next) {
     res.json({message : 'pong'})

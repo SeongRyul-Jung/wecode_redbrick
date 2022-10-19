@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-newsRouter = require('./newsRouter');
+newsRouter = require('./newsRouter')
 
 router.use('/news', newsRouter);
 
