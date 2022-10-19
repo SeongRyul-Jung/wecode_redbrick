@@ -11,3 +11,7 @@ db/schema.sql
 db/.DS_Store
 
 db/migrations/.DS_Store
+
+../.DS_Store
+../Harry/.DS_Store
+../Ramsey/
