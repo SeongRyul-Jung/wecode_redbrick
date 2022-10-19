@@ -18,6 +18,8 @@ const createApp = () => {
   app.use(morgan("dev"));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
   app.get('/ping', function (req, res, next) {
     res.json({message : 'pong'})
   })
