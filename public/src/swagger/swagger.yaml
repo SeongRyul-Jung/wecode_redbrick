@@ -1,13 +1,24 @@
----
-openapi: 3.0.1
+openapi: 3.0.0
 info:
-  title: Public Data API
-  version: v1
-  description: 한국언론진흥재단 메타데이터 중 코로나, 메타버스 관련 정보를 제공합니다.
+  version: 0.0.1
+  title: 2호선 지하철 도착정보 및 통행인구정보 제공 API 
+  description: 공공데이터 API를 사용하여 사용자가 입력한 지하철 역에 대해 실시간 도착정보와 시간대별 통행인구수를 제공합니다.
   license:
-    name: DanaJeong
+    name: mascoeskimmascoeskim
+
 servers:
-  - url: http://localhost:3000/
+  - url: http://localhost:5000/
+components:
+  parameters: null
+  #Schemas : model 정보
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string  
 paths:
   /news/{category}/{year}:
     get:
@@ -67,4 +78,187 @@ paths:
               schema: 
               example : 
                 message: SERVER ERROR!        
-      additionalProperties: false
+
+  /metro:
+    get:
+      tags:
+        - 지하철
+      summary: 역 이름을 입력하면 지하철 도착정보를 반환
+      description: 도착시간을 조회할 서울 내 지하철 역명을 입력해주세요 ex)선릉,사당역 등..
+      consumes:
+        - application/json
+      parameters:
+        - name: "station"
+          in: "query"
+          description: "지하철 역명"
+          required: "true"
+          type: "string" 
+
+      responses:
+        '200':
+          description: 입력한 지하철 도착정보를 성공적으로 전송함 
+            <br><br><br>subwayId = 지하철호선ID
+            <br>updnLine = 상하행선구분 (2호선 - (내선-0,외선-1),상행,하행)
+            <br>trainLineNm = 도착지방면 (성수행 - 구로디지털단지방면)
+            <br>subwayHeading = 내리는문방향 (오른쪽,왼쪽)
+            <br>statnFid = 이전지하철역ID
+            <br>statnTid = 다음지하철역ID
+            <br>statnId = 지하철역ID
+            <br>statnNm = 지하철역명
+            <br>trnsitCo = 환승노선수
+            <br>Rordkey = 도착예정열차순번 (상하행코드(1자리), 순번(첫번째, 두번째 열차 , 1자리), 첫번째 도착예정 정류장 - 현재 정류장(3자리), 목적지 정류장, 급행여부(1자리))
+            <br>subwayList = 연계호선ID
+            <br>statnList = 연계지하철역ID (1002000233,1007000744)
+            <br>btrainSttus = 열차종류
+            <br>barvlDt = 열차도착예정시간 (단위-초)
+            <br>btrainNo = 열차번호
+            <br>bstatnId = 종착지하철역ID
+            <br>bstatnNm = 종착지하철역명
+            <br>recptnDt = 열차도착정보를 생성한 시각
+            <br>arvlMsg2 = 첫번째도착메세지
+            <br>arvlMsg3 = 두번째도착메세지
+            <br>arvlCd = 도착코드(0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  - beginRow: null
+                    endRow: null
+                    curPage: null
+                    pageRow: null
+                    totalCount: 9
+                    rowNum: 1
+                    selectedCount: 9
+                    subwayId: '1004'
+                    subwayNm: null
+                    updnLine: 상행
+                    trainLineNm: 당고개행 - 총신대입구(이수)방면
+                    subwayHeading: 오른쪽
+                    statnFid: '1004000434'
+                    statnTid: '1004000432'
+                    statnId: '1004000433'
+                    statnNm: 사당
+                    trainCo: null
+                    ordkey: 01001당고개0
+                    subwayList: '1002,1004'
+                    statnList: '1002000226,1004000433'
+                    btrainSttus: null
+                    barvlDt: '155'
+                    btrainNo: '4594'
+                    bstatnId: '0'
+                    bstatnNm: 당고개
+                    recptnDt: '2022-10-20 13:21:31.0'
+                    arvlMsg2: 전역 도착
+                    arvlMsg3: 남태령
+                    arvlCd: '5'
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+              example:
+                message: PLEASE_CHECK_STAION_NAME
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+              example:
+                message: 서버 내부 오류
+
+  /metro/passenger:
+    get:
+      tags:
+        - 지하철
+      summary: 2호선 내 지하철역 이름을 입력하면 시간별 일일 통행인원 정보를 반환
+      description: 통행인원을 조회할 2호선 지하철 역명을 입력해주세요 ex)선릉,사당역 등..
+      consumes:
+        - application/json
+      parameters:
+        - name: "station"
+          in: "query"
+          description: "지하철 역명(현재 2호선만 가능)"
+          type: "string" 
+
+      responses:
+        '200':
+          description: 입력한 지하철 도착정보를 성공적으로 전송함 
+            <br><br><br>Key = 시간대_승/하차객
+            <br>ex) "SEVEN_RIDE_NUM" = 7시 승차객
+            <br>    "EIGHTEEN_ALIGHT_NUM  = 18시 하차객     
+
+
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  - {
+                      "USE_MON": "202209",
+                      "LINE_NUM": "2호선",
+                      "SUB_STA_NM": "사당",
+                      "FOUR_RIDE_NUM": 4,
+                      "FOUR_ALIGHT_NUM": 0,
+                      "FIVE_RIDE_NUM": 392,
+                      "FIVE_ALIGHT_NUM": 132,
+                      "SIX_RIDE_NUM": 869,
+                      "SIX_ALIGHT_NUM": 1002,
+                      "SEVEN_RIDE_NUM": 2437,
+                      "SEVEN_ALIGHT_NUM": 1504,
+                      "EIGHT_RIDE_NUM": 3400,
+                      "EIGHT_ALIGHT_NUM": 2187,
+                      "NINE_RIDE_NUM": 2506,
+                      "NINE_ALIGHT_NUM": 1710,
+                      "TEN_RIDE_NUM": 1590,
+                      "TEN_ALIGHT_NUM": 1381,
+                      "ELEVEN_RIDE_NUM": 1403,
+                      "ELEVEN_ALIGHT_NUM": 1592,
+                      "TWELVE_RIDE_NUM": 1616,
+                      "TWELVE_ALIGHT_NUM": 1667,
+                      "THIRTEEN_RIDE_NUM": 1650,
+                      "THIRTEEN_ALIGHT_NUM": 1603,
+                      "FOURTEEN_RIDE_NUM": 1750,
+                      "FOURTEEN_ALIGHT_NUM": 1623,
+                      "FIFTEEN_RIDE_NUM": 1822,
+                      "FIFTEEN_ALIGHT_NUM": 1957,
+                      "SIXTEEN_RIDE_NUM": 2014,
+                      "SIXTEEN_ALIGHT_NUM": 2550,
+                      "SEVENTEEN_RIDE_NUM": 2442,
+                      "SEVENTEEN_ALIGHT_NUM": 3671,
+                      "EIGHTEEN_RIDE_NUM": 2970,
+                      "EIGHTEEN_ALIGHT_NUM": 5262,
+                      "NINETEEN_RIDE_NUM": 2043,
+                      "NINETEEN_ALIGHT_NUM": 3645,
+                      "TWENTY_RIDE_NUM": 1898,
+                      "TWENTY_ALIGHT_NUM": 2149,
+                      "TWENTY_ONE_RIDE_NUM": 2009,
+                      "TWENTY_ONE_ALIGHT_NUM": 2052,
+                      "TWENTY_TWO_RIDE_NUM": 1930,
+                      "TWENTY_TWO_ALIGHT_NUM": 2062,
+                      "TWENTY_THREE_RIDE_NUM": 1084,
+                      "TWENTY_THREE_ALIGHT_NUM": 1302,
+                      "MIDNIGHT_RIDE_NUM": 183,
+                      "MIDNIGHT_ALIGHT_NUM": 370,
+                      "ONE_RIDE_NUM": 1,
+                      "ONE_ALIGHT_NUM": 24,
+                      "TWO_RIDE_NUM": 0,
+                      "TWO_ALIGHT_NUM": 0,
+                      "THREE_RIDE_NUM": 0,
+                      "THREE_ALIGHT_NUM": 0,
+                      "WORK_DT": "20221003",
+                    }
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+              example:
+                message: PLEASE_CHECK_STAION_NAME
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+              example:
+                message: 서버 내부 오류

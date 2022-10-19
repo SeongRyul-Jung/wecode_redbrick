@@ -1,8 +1,9 @@
-const express = require('express')
+const express = require("express");
 const router = express.Router();
 
-newsRouter = require('./newsRouter')
-
+const newsRouter = require('./newsRouter')
+const metroRouter = require("./metroRouter");
 router.use('/news', newsRouter);
+router.use("/metro", metroRouter);
 
 module.exports = router;
