@@ -1,4 +1,3 @@
-
 const request = require("supertest");
 const { createApp } = require("../app");
 
@@ -62,6 +61,32 @@ describe("PUBLIC_API", () => {
       .expect(500) 
       .expect({ message:"Cannot read properties of undefined (reading 'RESULT')"})
 
+  });
+
+  test("해당 키워드가 포함된 버스정류장 정보를 확인합니다.", async () => {
+    await request(app)
+      .get(encodeURI(`/bus/stop/강남역`))
+      .expect(200)
+  });
+
+  test("Bad Request", async () => {
+    await request(app)
+      .get(encodeURI(`/bus/stop/강남역역`))
+      .expect(400)
+      .expect({ "message": "유효하지 않은 정보입니다." })
+  });
+
+  test("버스정류장명과 6~9시 승하차 승객 수를 확인합니다.", async () => {
+    await request(app)
+      .get("/bus/passenger?busNum=0017")
+      .expect(200)
+  });
+
+  test("Bad Request", async () => {
+    await request(app)
+      .get("/bus/passenger?busNum=000000000")
+      .expect(400)
+      .expect({ "message": "유효하지 않은 정보입니다." })
   });
   
 });
