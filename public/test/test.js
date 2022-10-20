@@ -1,48 +1,33 @@
 
 const request = require("supertest");
-
 const { createApp } = require("../app");
 
-const { myDataSource } = require("../src/models/data-source");
+describe("GET News", () => {
+  let app = createApp();
 
-describe("Sign Up", () => {
-  let app;
-
-  beforeAll(async () => {
-
-    app = createApp();
-    await AppDataSource.initialize();
-  });
-
-  afterAll(async () => {
-
-    await AppDataSource.query(`TRUNCATE users`);
-
-
-    await AppDataSource.destroy();
-  });
-
-  test("FAILED: invalid email", async () => {
+  test("FAILED: DATA_DOESN'T_EXIST", async () => {
 
     await request(app)
-      .post("/users/signup") 
-      .send({ email: "wrongEmail", password: "password001@" }) 
+      .get("/news/corona/2017") 
       .expect(400) 
-      .expect({ message: "invalid email!" });
+      .expect({ message: "DATA DOESN'T EXIST" });
+
   });
 
-  test("SUCCESS: created user", async () => {
+  test("SUCCESS: GET_DATA_OF_CORONA", async () => {
+
     await request(app)
-      .post("/users/signup")
-      .send({ email: "wecode001@gmail.com", password: "password001@" })
-      .expect(201);
+      .get("/news/corona/2020")
+      .expect(200);
+
   });
 
-  test("FAILED: duplicated email", async () => {
+  test("SUCCESS: GET_DATA_OF_METABUS", async () => {
+
     await request(app)
-      .post("/users/signup")
-      .send({ email: "wecode001@gmail.com", password: "password001@" })
-      .expect(409)
-      .expect({ message: "duplicated email" });
+      .get("/news/metabus/2007")
+      .expect(200);
+
   });
+
 });
