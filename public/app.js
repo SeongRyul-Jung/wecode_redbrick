@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const YAML = require("yamljs")
+const path = require('path');
+const swaggerUi = require('swagger-ui-express');
 const { globalErrorHandler } = require('./src/utils/error');
-const { swaggerUi, specs } = require('./src/swagger/swagger');   
+const swaggerSpec = YAML.load(path.join(__dirname, "./src/swagger/swagger.yaml"));
 
 const routes = require("./src/routers");
 
@@ -13,7 +16,7 @@ const createApp = () => {
   app.use(express.json());
   app.use(cors());
   app.use(morgan("dev"));
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   app.get('/ping', function (req, res, next) {
     res.json({message : 'pong'})

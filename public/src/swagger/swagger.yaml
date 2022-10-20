@@ -1,0 +1,70 @@
+---
+openapi: 3.0.1
+info:
+  title: Public Data API
+  version: v1
+  description: 한국언론진흥재단 메타데이터 중 코로나, 메타버스 관련 정보를 제공합니다.
+  license:
+    name: DanaJeong
+servers:
+  - url: http://localhost:3000/
+paths:
+  /news/{category}/{year}:
+    get:
+      tags:
+      - 뉴스 빅데이터 조회
+      description: 2020~2021 코로나 및 메타버스 뉴스 빅데이터 조회하기
+      operationId: ApiTodoGet
+      parameters:
+      - name: category
+        in: path
+        description: 카테고리 선택
+        required: true
+        schema:
+          type: string
+          enum:
+          - metabus
+          - corona
+      - name: year
+        in: path
+        description: 연도 선택
+        required: true
+        schema:
+          type: string
+          enum:
+          - '2007'
+          - '2020'
+          - '2021'
+      responses:
+        '200':
+          description: 데이터 통신 성공
+          content:
+            application/json:
+              schema: 
+              example: 
+                data:
+                  - 기고자: string
+                    본문: string
+                    언론사: string
+                    원본주소: string
+                    일자: date
+                    제목: string
+                    주소: string
+                    키워드: array
+                    통합 분류1: string
+                    특성추출: array
+        '400':
+          description: 데이터가 존재하지 않음
+          content:
+            application/json:
+              schema: 
+              example : 
+                message: DATA DOESN'T EXIST
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema: 
+              example : 
+                message: SERVER ERROR!        
+      additionalProperties: false

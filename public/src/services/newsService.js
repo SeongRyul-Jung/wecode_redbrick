@@ -1,10 +1,16 @@
 const fetch = require('node-fetch')
 
+let strToObj = (str, n) =>{
+    let result = str.split(",").splice(0,n);
+    return result;
+} 
+
 const getNews = async (category, year) => {
 
     const serviceKey = process.env.PUBLIC_KEY;
     let url;
     let news;
+    let result = [];
 
     const metabusUrl = {
         "2007" : "/15097929/v1/uddi:e631fe5b-6674-4a78-b673-bd14f90f57f9",
@@ -35,7 +41,25 @@ const getNews = async (category, year) => {
         news = myJson.data;
     })
 
-    return news;
+    news.map(el =>{
+
+        var obj = {};
+        obj["기고자"] = el["기고자"];
+        obj["본문"] = el["본문"];
+        obj["언론사"] = el["언론사"];
+        obj["원본주소"] = el["원본주소"];
+        obj["일자"] = el["일자"];
+        obj["제목"] = el["제목"];
+        obj["주소"] = el["주소"];
+        obj["키워드"] = strToObj(el["키워드"], 12);
+        obj["통합 분류1"] = el["통합 분류1"];
+        obj["특성추출"] = strToObj(el["특성추출"], 8);
+
+        result.push(obj);
+        
+    })
+
+    return result;
 
 }
 
