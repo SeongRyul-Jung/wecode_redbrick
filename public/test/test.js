@@ -1,6 +1,7 @@
 const request = require("supertest");
 const { createApp } = require("../app");
 
+
 describe("PUBLIC_API", () => {
   let app = createApp();
 
@@ -88,5 +89,21 @@ describe("PUBLIC_API", () => {
       .expect(400)
       .expect({ "message": "유효하지 않은 정보입니다." })
   });
-  
+
+  test("FAILED: invalid SERVICE", async () => {
+    await request(app).get("/dust?SERVICE=1").expect(400);
+  });
+
+  test("SUCCESS: GET_YEAR_DUST_INFO", async () => {
+    await request(app)
+      .get(encodeURI(`/dust?SERVICE=yearMicroDustInfo`))
+      .expect(200);
+  });
+
+  test("SUCCESS: GET_DUSTSHELTER", async () => {
+    await request(app).get(encodeURI(`/dust?SERVICE=shuntPlace`)).expect(200);
+  });
 });
+
+
+

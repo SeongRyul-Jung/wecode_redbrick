@@ -9,7 +9,6 @@ const swaggerSpec = YAML.load(path.join(__dirname, "./src/swagger/swagger.yaml")
 
 const routes = require("./src/routers");
 
-
 const createApp = () => {
   const app = express();
 
@@ -18,11 +17,10 @@ const createApp = () => {
   app.use(morgan("dev"));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
   app.get('/ping', function (req, res, next) {
     res.json({message : 'pong'})
   })
+
   app.use(routes);
 
   app.use(globalErrorHandler);
