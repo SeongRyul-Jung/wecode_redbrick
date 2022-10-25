@@ -27,6 +27,7 @@
     "jest": "^29.2.1",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.7",
+    "octokit": "^2.0.9",
     "path": "^0.12.7",
     "swagger-cli": "^4.0.4",
     "yamljs": "^0.3.0"
