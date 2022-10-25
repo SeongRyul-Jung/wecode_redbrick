@@ -3,6 +3,7 @@ const metroController = require("./metroController");
 const busController = require("./busController");
 const wetherControllers = require("./wetherControllers");
 const dustController = require("./dustController");
+const gitController = require("./gitController");
 
 module.exports = {
   newsController,
@@ -10,4 +11,5 @@ module.exports = {
   busController,
   wetherControllers,
   dustController,
+  gitController
 };
