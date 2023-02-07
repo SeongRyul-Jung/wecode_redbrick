@@ -20,6 +20,7 @@ const createApp = () => {
   app.get('/ping', function (req, res, next) {
     res.json({message : 'pong'})
   })
+  
 
   app.use(routes);
 
